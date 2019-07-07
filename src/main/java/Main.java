@@ -1,6 +1,7 @@
 package main.java;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -17,34 +18,22 @@ public class Main {
         bills.put(200, 100);
         bills.put(500, 100);
 
-
-        Scanner scanner = new Scanner(System.in);
+        ATM atm = new ATM();
+        atm.setBillSet(bills.keySet());
         System.out.print("Hello, please enter required sum: ");
-        Integer s = scanner.nextInt();
+        System.out.println(atm.getCash(ATMUtils.setReader().nextInt()));
 
-        Set<Integer> set = new TreeSet<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o2.compareTo(o1);
-            }
-        });
-
-        set.addAll(bills.keySet());
-        Iterator i = set.iterator();
-        Map<Integer, Integer> cash = new TreeMap<>(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o2.compareTo(o1);
-            }
-        });
-        for (Integer e : set) {
-            System.out.println(e);
-            int v = (s / e);
-            if (s == 0) {break;}
-            if (v > 0) {cash.put(e, v);}
-            s = s - e * v;
-
+//        24565 to 35789
+        Map<Long,Integer> timestamps = new TreeMap<>();
+        for (int i = 24565; i <= 35789; i++) {
+            long startTime = System.nanoTime();
+            atm.getCash(i);
+            long endTime = System.nanoTime();
+            timestamps.put(endTime - startTime,i);
         }
-        System.out.println(cash);
+
+        for (Long e: timestamps.keySet()) {
+            System.out.println("Elapsed time: " + TimeUnit.NANOSECONDS.toMicros(e) + " microseconds for " + timestamps.get(e));
+        }
     }
 }
